@@ -1,8 +1,3 @@
-/**
- * @author      OA Wu <comdan66@gmail.com>
- * @copyright   Copyright (c) 2015 OA Wu Design
- */
-
 $(function () {
 
   function initialize () {
@@ -11,23 +6,21 @@ $(function () {
     var $loading = $('#loading');
     var $runDice = $('#run_dice');
     var $throwDice = $('#throw_dice');
+    var $gpsTest = $('#gps_test');
+    var $infoTest = $('#info_test');
+    const api_key = "AIzaSyC-kx3lfIZdfF2uUsmpx10G40lCy9OzW8g";
 
     var markerInfos = [
-      {position: new google.maps.LatLng (23.568086083371814, 120.30466228723526), title: '北港朝天宮', price: 1000},
-      {position: new google.maps.LatLng (23.564542759763924, 120.30401922762394), title: '日興堂餅店', price: 300},
-      {position: new google.maps.LatLng (23.565024632804803, 120.30178427696228), title: '北港大橋', price: 100},
-      {position: new google.maps.LatLng (23.568382943785544, 120.3024172782898), title: '仁愛眼鏡', price: 400},
-      {position: new google.maps.LatLng (23.56869271045844, 120.30137121677399), title: '北港圓環', price: 300},
-      {position: new google.maps.LatLng (23.569646590544906, 120.3018057346344), title: '第一銀行', price: 300},
-      {position: new google.maps.LatLng (23.570438207418054, 120.29966801404953), title: '麥當勞', price: 350},
-      {position: new google.maps.LatLng (23.572139430017806, 120.30015349388123), title: '黑仔當歸鴨', price: 400},
-      {position: new google.maps.LatLng (23.571205235364623, 120.30257821083069), title: '85度C ', price: 300},
-      {position: new google.maps.LatLng (23.569961271115567, 120.30586391687393), title: '廟後街', price: 200},
+      {position: new google.maps.LatLng (22.994694917547946, 120.20009125908481), title: '昭安理髮廳', place_id: "ChIJ5dc2m2N2bjQREu4PjT8ehCA", price: 1000},
+      {position: new google.maps.LatLng (22.996879988605066, 120.20005337020355), title: '開基武廟', place_id: "ChIJK27mV2F2bjQRFIXYGEvb8NE", price: 100},
+      {position: new google.maps.LatLng (22.997414202029148, 120.20054429718753), title: '府城百年木屐老店', place_id: "ChIJiZaJXGF2bjQRlGY7xsg-Ot8", price: 300},
+      {position: new google.maps.LatLng (22.995686438504624, 120.20164759718756), title: '大井頭', place_id: "ChIJcXrNyGN2bjQRElVcsbLTbhM", price: 400},
+      {position: new google.maps.LatLng (22.99531114006312, 120.20152957999139), title: '全美戲院', place_id: "ChIJ2VORzmN2bjQRBTGamcfvGgg", price: 300},
     ];
 
     var name1 = '玩家';
     var name2 = '電腦';
-    name1 = prompt ("請輸入您的暱稱吧！", name1);
+    name1 = prompt ("請輸入您的暱稱吧！!", name1);
     if (!name1 || name1.length <= 0)
       name1 = '玩家';
 
@@ -46,9 +39,68 @@ $(function () {
     var user2 = map.createUser (name2, $('#quota2 span'), 'rgba(0, 128, 0, 0.9)');
     user2.setPosition ();
 
-    //map.logs ('使用者初始化成功！', 'title');
+    map.logs ('使用者初始化成功！', 'title');
     //map.logs ('遊戲開始，請擲骰子吧！', 'title');
 
+    $gpsTest.click(function (){
+      // for further usage
+      var index = user1.index;
+      $.ajax({
+        type:'POST',
+        url:"https://www.googleapis.com/geolocation/v1/geolocate?key=" + api_key,
+        data:{},
+        success: function(data){
+          console.log(data);
+          var loc = data.location;
+          latitude = loc.lat;
+          longitude = loc.lng;
+          alert("gps: Latitude: " + loc.lat + "°, Longitude: " + loc.lng + "°");
+          var target_lat = markerInfos[index].position.lat();
+          var target_lng = markerInfos[index].position.lng();
+          console.log(target_lat, target_lng);
+          compare_test(latitude, longitude, target_lat, target_lng, 0.001);
+        },
+        error: function (xhr, textStatus, thrownError) {
+          alert(textStatus);
+        }
+      });
+    });
+
+    function compare_test(lat, lng, target_lat, target_lng, threshold) {
+      var diff_lat = Math.abs(lat - target_lat);
+      var diff_lng = Math.abs(lng - target_lng);
+      console.log("lat: " + diff_lat + "; lng: " + diff_lng);
+      var str;
+      if (diff_lat < threshold && diff_lng < threshold) {
+        str = "任務成功！！";
+      } else {
+        str = "任務失敗！！";
+      }
+      alert("gps: " + str);
+    };
+
+    function update_info(){
+      var index = user1.index;
+      console.log(markerInfos[index].title);
+      var place_id = markerInfos[index].place_id;
+      // get info
+      $.ajax({
+        type:'GET',
+        url:"https://maps.googleapis.com/maps/api/place/details/json?place_id="+ place_id +"&language=zh-TW&fields=formatted_address%2Cphotos&key=" + api_key,
+        data:{},
+        success: function(data){
+          console.log(data);
+          var address = data.result.formatted_address;
+          var photo_ref = data.result.photos[index].photo_reference;
+          var photo_url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photo_ref + "&key=" + api_key;
+          map.logs(photo_url, 'image');
+          map.logs(address);
+        },
+        error: function (xhr, textStatus, thrownError) {
+          alert(textStatus);
+        }
+      });
+    };
 
     $throwDice.click (function () {
       $throwDice.prop ('disabled', true);
@@ -72,8 +124,10 @@ $(function () {
             user2.goStep (nStep, true, function () {
               $throwDice.prop ('disabled', false);
               //map.logs ('換 ' + user1.name + ' 擲骰子！', 'title');
+              update_info();
             });
-          }); });
+          });
+        });
         }, 800);
       });
     });

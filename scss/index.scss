@@ -61,6 +61,14 @@ html {
       font-size: 20px;
       width: 100px;
     }
+    #gps_test {
+      position: absolute;
+      top: 60px;
+      left: 10px;
+      @include button('yellow');
+      font-size: 20px;
+      width: 100px;
+    }
     #about {
       position: absolute;
       top: 30px;

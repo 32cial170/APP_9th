@@ -1,8 +1,3 @@
-/**
- * @author      OA Wu <comdan66@gmail.com>
- * @copyright   Copyright (c) 2015 OA Wu Design
- */
-
 (function () {
   function funcs (option) {
     var _map = null;
@@ -75,6 +70,10 @@
 
       if (className === 'title')
         $_logs.append ($('<div />').addClass ('title').text (text));
+      else if (className === 'image') {
+        var str = "<img decoding='async' style='position: absolute;top: 8%;left: 9%;width: 340px;height: 240px;transform: translateY(-50%) translateX(-50%);' src='";
+        $_logs.append ($(str + text + "'><img/>"));
+      }
       else
         $_logs.append ($('<div />').addClass ('log').append ($('<div />').addClass ('l').text (text)).append ($('<div />').addClass ('r').text (nowTime ())));
 
@@ -86,7 +85,7 @@
 
     this.initMap = function ($map, option) {
       option = $.extend ({
-        zoom: 16,
+        zoom: 18,
         scaleControl: true,
         navigationControl: false,
         disableDoubleClickZoom: true,
@@ -94,7 +93,7 @@
         zoomControl: false,
         scrollwheel: false,
         streetViewControl: false,
-        center: new google.maps.LatLng (23.568038757736595, 120.30465692281723),
+        center: new google.maps.LatLng (22.996033596753676, 120.20062967856359),
       }, option);
 
       _map = new google.maps.Map ($map.get (0), option);
