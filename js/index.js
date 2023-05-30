@@ -8,7 +8,7 @@ $(function () {
     var $throwDice = $('#throw_dice');
     var $gpsTest = $('#gps_test');
     var $infoTest = $('#info_test');
-    const api_key = "AIzaSyC-kx3lfIZdfF2uUsmpx10G40lCy9OzW8g";
+    const api_key = "";
 
     var markerInfos = [
       {position: new google.maps.LatLng (22.994694917547946, 120.20009125908481), title: '昭安理髮廳', place_id: "ChIJ5dc2m2N2bjQREu4PjT8ehCA", price: 1000},
