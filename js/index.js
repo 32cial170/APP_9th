@@ -57,8 +57,11 @@ $(function () {
           alert("gps: Latitude: " + loc.lat + "°, Longitude: " + loc.lng + "°");
           var target_lat = markerInfos[index].position.lat();
           var target_lng = markerInfos[index].position.lng();
+          
           console.log(target_lat, target_lng);
-          compare_test(latitude, longitude, target_lat, target_lng, 0.001);
+          var result = compare_test(latitude, longitude, target_lat, target_lng, 0.001);
+          if (result) markerInfos[index].layer += 1;
+          
         },
         error: function (xhr, textStatus, thrownError) {
           alert(textStatus);
@@ -73,10 +76,14 @@ $(function () {
       var str;
       if (diff_lat < threshold && diff_lng < threshold) {
         str = "任務成功！！";
+        alert("gps: " + str);
+        return true;
       } else {
         str = "任務失敗！！";
+        alert("gps: " + str);
+        return false;
       }
-      alert("gps: " + str);
+      //alert("gps: " + str);
     };
 
     function update_info(){
@@ -121,11 +128,19 @@ $(function () {
             nStep = Math.floor ((Math.random () * 6) + 1);
             //map.logs (user2.name + ' 擲出 ' + nStep + ' 點！');
 
+            user2.round_count += 1;
             user2.goStep (nStep, true, function () {
               $throwDice.prop ('disabled', false);
               //map.logs ('換 ' + user1.name + ' 擲骰子！', 'title');
               update_info();
             });
+            if(user2.round_count == 15){
+              if(user1.point > user2.point){
+                alert("玩家1獲勝,遊戲結束");
+              }else if(user1.point < user2.point){
+                alert("玩家2獲勝,遊戲結束");
+              }else alert("平手，遊戲結束")
+            }
           });
         });
         }, 800);

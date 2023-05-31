@@ -140,6 +140,18 @@
         t.title = t.title;
         t.layer = 0;
         t.toBuild = that.markerInfoToBuild;
+        t.getTask = function () {
+          this.marker.setIcon({
+            ...this.marker.icon,
+            fillColor: 'rgba(250, 0, 0, 0.85)'
+          });
+        };
+        t.taskComplete = function () {
+          this.marker.setIcon({
+            ...this.marker.icon,
+            fillColor: 'rgba(0, 255, 0, 0.85)'
+          });
+        };
 
         t.marker = new google.maps.Marker ({
           map: _map,
@@ -224,19 +236,27 @@
     };
 
     this.userBuyStep = function (autoBuy) {
+      //_markerInfos[this.index].setIcon ();
       if (_markerInfos[this.index].owner && _markerInfos[this.index].owner != this)
         return false;
 
-      if (!(autoBuy || confirm ((_markerInfos[this.index].layer ? '是否加蓋' : '是否購買') + _markerInfos[this.index].title + '(' + _markerInfos[this.index].price + '元)？'))) {
+      // if (!(autoBuy || confirm ((_markerInfos[this.index].layer ? '是否加蓋' : '是否購買') + _markerInfos[this.index].title + '(' + _markerInfos[this.index].price + '元)？'))) {
+      //   _markerInfos[this.index].owner = null;
+      //   //logs (this.name + ' 取消' + (_markerInfos[this.index].layer ? '加蓋' : '購買') + _markerInfos[this.index].title + '！');
+      //   return false;
+      // }
+      if (!(autoBuy || confirm ('是否接任務'))) {
         _markerInfos[this.index].owner = null;
-        //logs (this.name + ' 取消' + (_markerInfos[this.index].layer ? '加蓋' : '購買') + _markerInfos[this.index].title + '！');
+        logs (this.name + ' 取消接' + _markerInfos[this.index].title + '地區的任務！');
         return false;
       }
 
-      if (this.quotaObj.text () < _markerInfos[this.index].price) {
-        //logs (this.name + ' 錢不夠，哭哭..');
-        return true;
-      }
+      _markerInfos[this.index].getTask ();
+      
+      // if (this.quotaObj.text () < _markerInfos[this.index].price) {
+      //   //logs (this.name + ' 錢不夠，哭哭..');
+      //   return true;
+      // }
 
       if (!_markerInfos[this.index].toBuild (this)) {
         alert ('系統錯誤！');
@@ -244,30 +264,34 @@
       }
 
       _markerInfos[this.index].owner = this;
-      this.quotaObj.text (this.quotaObj.text () - _markerInfos[this.index].price);
+      //this.quotaObj.text (this.quotaObj.text () - _markerInfos[this.index].price);
 
-      if (_markerInfos[this.index].layer > 1)
-        //logs (this.name + ' 房子加蓋了一層！');
-      //else
-        //logs (this.name + ' 蓋了一棟房子！');
+      if (_markerInfos[this.index].layer > 1){
+        logs (this.name + ' 完成任務獲得積分！');
+        this.point += 500;
+        _markerInfos[this.index].taskComplete ();
+      }
+      else
+        logs (this.name + ' 接取任務！');
 
       return true;
     };
 
     this.userPayStep = function (autoBuy) {
-      if (!_markerInfos[this.index].owner || _markerInfos[this.index].owner == this)
-        return false;
+      if (_markerInfos[this.index].owner ) return false;
+      // if (!_markerInfos[this.index].owner || _markerInfos[this.index].owner == this)
+      //   return false;
 
-      var price = parseInt (_markerInfos[this.index].layer * _markerInfos[this.index].price, 10);
+      // var price = parseInt (_markerInfos[this.index].layer * _markerInfos[this.index].price, 10);
 
-      if (this.quotaObj.text () < price) {
-        alert (this.name + ' 破產了！');
-        location.reload ();
-      } else {
-        this.quotaObj.text (this.quotaObj.text () - price);
-        _markerInfos[this.index].owner.quotaObj.text (parseInt (_markerInfos[this.index].owner.quotaObj.text (), 10) + price);
-        //logs (this.name + ' 付給了 ' + _markerInfos[this.index].owner.name + ' 過路費 ' + price + '元！');
-      }
+      // if (this.quotaObj.text () < price) {
+      //   alert (this.name + ' 破產了！');
+      //   location.reload ();
+      // } else {
+      //   this.quotaObj.text (this.quotaObj.text () - price);
+      //   _markerInfos[this.index].owner.quotaObj.text (parseInt (_markerInfos[this.index].owner.quotaObj.text (), 10) + price);
+      //   //logs (this.name + ' 付給了 ' + _markerInfos[this.index].owner.name + ' 過路費 ' + price + '元！');
+      // }
     };
 
     this.userGoStop = function (autoRun, callback) {
@@ -311,6 +335,7 @@
       var now = this.getPosition ();
       var will = _markerInfos[(this.index + 1) % _markerInfos.length].getPosition ();
 
+
       var Unit = getUnit (will, now);
       if (!Unit)
         return false;
@@ -323,6 +348,8 @@
       return {
         id: _userCount++,
         index: 0,
+        point: 0,
+        round_count: 0,
         name: name,
         quotaObj: $quota,
         move: this.userMove,
@@ -344,6 +371,7 @@
             }
           })};
     };
+
   }
 
   window.funcs = funcs;
