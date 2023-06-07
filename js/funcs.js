@@ -64,24 +64,24 @@
       // return d.getFullYear () + '-' + ("0" + (d.getMonth () + 1)).slice (-2) + '-' + ('0' + d.getDate ()).slice (-2) + ' ' + d.getHours () + ':' + d.getMinutes () + ':' + d.getSeconds ();
       return d.getHours () + ':' + d.getMinutes () + ':' + d.getSeconds ();
     };
-    var logs = function (text, className) {
-      if (!($_logs && text))
-        return;
+    // var logs = function (text, className) {
+    //   if (!($_logs && text))
+    //     return;
 
-      if (className === 'title')
-        $_logs.append ($('<div />').addClass ('title').text (text));
-      else if (className === 'image') {
-        var str = "<img decoding='async' style='position: absolute;top: 8%;left: 9%;width: 340px;height: 240px;transform: translateY(-50%) translateX(-50%);' src='";
-        $_logs.append ($(str + text + "'><img/>"));
-      }
-      else
-        $_logs.append ($('<div />').addClass ('log').append ($('<div />').addClass ('l').text (text)).append ($('<div />').addClass ('r').text (nowTime ())));
+    //   if (className === 'title')
+    //     $_logs.append ($('<div />').addClass ('title').text (text));
+    //   else if (className === 'image') {
+    //     var str = "<img decoding='async' style='position: absolute;top: 8%;left: 9%;width: 340px;height: 240px;transform: translateY(-50%) translateX(-50%);' src='";
+    //     $_logs.append ($(str + text + "'><img/>"));
+    //   }
+    //   else
+    //     $_logs.append ($('<div />').addClass ('log').append ($('<div />').addClass ('l').text (text)).append ($('<div />').addClass ('r').text (nowTime ())));
 
-      var _logs = $_logs.get (0);
-      _logs.scrollTop = _logs.scrollHeight;
-    };
+    //   var _logs = $_logs.get (0);
+    //   _logs.scrollTop = _logs.scrollHeight;
+    // };
 
-    this.logs = logs;
+    // this.logs = logs;
 
     this.initMap = function ($map, option) {
       option = $.extend ({
@@ -139,6 +139,7 @@
         t.price = t.price;
         t.title = t.title;
         t.layer = 0;
+        t.finshed = false;
         t.toBuild = that.markerInfoToBuild;
         t.getTask = function () {
           this.marker.setIcon({
@@ -245,11 +246,11 @@
       //   //logs (this.name + ' 取消' + (_markerInfos[this.index].layer ? '加蓋' : '購買') + _markerInfos[this.index].title + '！');
       //   return false;
       // }
-      if (!(autoBuy || confirm ('是否接任務'))) {
-        _markerInfos[this.index].owner = null;
-        logs (this.name + ' 取消接' + _markerInfos[this.index].title + '地區的任務！');
-        return false;
-      }
+      // if (!(autoBuy || confirm ('是否接任務'))) {
+      //   _markerInfos[this.index].owner = null;
+      //   logs (this.name + ' 取消接' + _markerInfos[this.index].title + '地區的任務！');
+      //   return false;
+      // }
 
       _markerInfos[this.index].getTask ();
       
@@ -266,13 +267,13 @@
       _markerInfos[this.index].owner = this;
       //this.quotaObj.text (this.quotaObj.text () - _markerInfos[this.index].price);
 
-      if (_markerInfos[this.index].layer > 1){
-        logs (this.name + ' 完成任務獲得積分！');
-        this.point += 500;
-        _markerInfos[this.index].taskComplete ();
-      }
-      else
-        logs (this.name + ' 接取任務！');
+      // if (_markerInfos[this.index].layer > 1){
+      //   console.log(this.name + ' 完成任務獲得積分！');
+      //   this.point += 500;
+      //   _markerInfos[this.index].taskComplete ();
+      // }
+      // else
+      //   console.log(this.name + ' 接取任務！');
 
       return true;
     };

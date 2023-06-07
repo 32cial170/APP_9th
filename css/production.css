@@ -567,6 +567,10 @@ video {
 .quote {
   height: 25px;
 }
+.redhint {
+  font-size: small;
+  color: red;
+}
 .form-control {
   background-image: none;
   border: 1px solid #b5b8bd;
