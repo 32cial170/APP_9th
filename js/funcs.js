@@ -115,12 +115,12 @@
       if(this.build)
         this.build.setMap (null);
 
-      this.build = new google.maps.Marker ({
-        map: _map,
-        draggable: false,
-        position: google.maps.geometry.spherical.computeOffset (this.getPosition (), 80, heading),
-        //icon: 'img/map/build/h' + user.id + '_' + this.layer + '.png'
-      });
+      // this.build = new google.maps.Marker ({
+      //   map: _map,
+      //   draggable: false,
+      //   position: google.maps.geometry.spherical.computeOffset (this.getPosition (), 80, heading),
+      //   //icon: 'img/map/build/h' + user.id + '_' + this.layer + '.png'
+      // });
 
       return true;
     };
