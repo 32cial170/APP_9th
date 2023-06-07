@@ -56,9 +56,11 @@ $(function () {
       $(this).closest('dialog').trigger('close');
     });
 
+    var threshold = prompt("請輸入判定距離！(公里)", "3.3");
+
     var name1 = '玩家';
     var name2 = '電腦';
-    //ame1 = prompt ("請輸入您的暱稱吧！!", name1);
+    //name1 = prompt ("請輸入您的暱稱吧！!", name1);
     if (!name1 || name1.length <= 0)
       name1 = '玩家';
 
@@ -116,7 +118,7 @@ $(function () {
           longitude = loc.lng;
           var target_lat = markerInfos[index].position.lat();
           var target_lng = markerInfos[index].position.lng();
-          var result = compare_test(latitude, longitude, target_lat, target_lng, 3.3);
+          var result = compare_test(latitude, longitude, target_lat, target_lng, threshold);
           if (result) markerInfos[index].layer += 1;
           var str;
           if (result) {
