@@ -252,7 +252,9 @@
       //   return false;
       // }
 
-      _markerInfos[this.index].getTask ();
+      if (!_markerInfos[this.index].finshed) {
+        _markerInfos[this.index].getTask ();
+      }
       
       // if (this.quotaObj.text () < _markerInfos[this.index].price) {
       //   //logs (this.name + ' 錢不夠，哭哭..');

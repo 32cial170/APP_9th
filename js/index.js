@@ -36,9 +36,15 @@ $(function () {
       {place_img: "./img/place/5.jpg", place_name: "全美戲院", place_info: "全美戲院完工於民國39年，至今仍使用手繪的電影看板，為該戲院的一大特色。", place_addr: "臺南市中西區永福路二段187號"},
     ];
 
-    $gpsInfo.showModal = function(text1, text2, text3) {
+    $gpsInfo.showModal = function(text1, text2, flag) {
       $gpsInfoText1.text(text1);
       $gpsInfoText2.text(text2);
+      if (!flag) {
+        $gpsInfoText2.attr('class', 'redhint');
+      } else {
+        $gpsInfoText2.attr('class', 'greenhint');
+      }
+      
       el = $(this);
       if (el.is('dialog')) {
           el[0].showModal();
@@ -110,7 +116,7 @@ $(function () {
           longitude = loc.lng;
           var target_lat = markerInfos[index].position.lat();
           var target_lng = markerInfos[index].position.lng();
-          var result = compare_test(latitude, longitude, target_lat, target_lng, 10);
+          var result = compare_test(latitude, longitude, target_lat, target_lng, 3.3);
           if (result) markerInfos[index].layer += 1;
           var str;
           if (result) {
@@ -128,7 +134,8 @@ $(function () {
           }
           $gpsInfo.showModal(
             str,
-            "距離目標： " + distance(latitude, longitude, target_lat, target_lng).toFixed(2) + "公里"
+            "距離目標： " + distance(latitude, longitude, target_lat, target_lng).toFixed(2) + "公里",
+            result
           );
           
         },

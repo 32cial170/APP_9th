@@ -571,6 +571,10 @@ video {
   font-size: small;
   color: red;
 }
+.greenhint {
+  font-size: small;
+  color: green;
+}
 .form-control {
   background-image: none;
   border: 1px solid #b5b8bd;
